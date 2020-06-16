@@ -49,7 +49,7 @@ export default function Home() {
         layout='vertical'
         ref={ref}
         style={{
-          width: '900px'
+          width: '500px'
         }}
       >
         <FormAntd.Item
@@ -64,6 +64,7 @@ export default function Home() {
 
         <FormAntd.Item
           label={'SCHEMA COMPONENT'}
+          style={{border: 'solid 1px grey'}}
         >
           <Parent 
 

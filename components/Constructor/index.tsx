@@ -1,5 +1,6 @@
 import { Controller, useFieldArray, useFormContext } from "react-hook-form"
 import { Input, Form, Button } from "antd"
+import { PlusOutlined } from '@ant-design/icons'
 
 interface IConstructorProps {
     // fields: any
@@ -16,18 +17,24 @@ export const Constructor: React.FC<IConstructorProps> = props => {
             display: 'flex',
             flexDirection: 'column'
         }}> 
-            {/* <Button
-                onClick={() => {append({field: "TEXT"})}}
-            >ADD ITEM</Button> */}
+            <Button
+                icon={<PlusOutlined />}
+                onClick={() => {append({field: "NEW ITEM"})}}
+            >ADD</Button>
             {fields.map((field, index) => (
                 <Form.Item
                     key={field.id}
-                    label={`${index}`}
+                    label={`${field.id}`}
                 >
                     <Controller
                         as={<Input />}
                         name={`editor[${index}].field`}
+                        defaultValue={field.field} // to populate items added in constructor
                     />
+                    <Button
+                        danger
+                        onClick={() => remove(index)}
+                    >DELETE</Button>
                 </Form.Item>
             ))}
         </div>
