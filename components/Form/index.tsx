@@ -15,6 +15,7 @@ export const Form = forwardRef<HTMLFormElement, IFormProps>((props, ref) => {
             ref={ref}
             onSubmit={props.onSubmit}
             className={cx('ant-form', 'ant-form-vertical')}
+            style={props.style}
         >
             {props.children}
         </form>

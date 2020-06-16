@@ -1,61 +1,83 @@
 import { Parent } from '../components/Parent'
 import { Form } from '../components/Form'
-import { useCallback, useRef, useState } from 'react'
-import { FormContext, useForm, Controller } from 'react-hook-form'
-import { Button } from 'antd'
+import { useCallback, useRef, useState, useEffect } from 'react'
+import { FormProvider, useForm, Controller, useFormContext } from 'react-hook-form'
+import { Button, Input, Form as FormAntd } from 'antd'
 
 export default function Home() {
   const ref = useRef<HTMLFormElement>()
-  const [editor, setEditor] = useState(
-    [
-      {
-        "field": "comment",
-      },
-      {
-        "field": "name",
-      }
-    ]
-  )
-  
-  // {
-  //   "field": "comment",
-  //   "label": "Comment",
-  //   "view": [
-  //       "text"
-  //   ]
-  // },
-  // {
-  //   "field": "name",
-  //   "view": [
-  //       "input"
-  //   ]
-  // }
+  const [layerName, setLayerName] = useState('name of layer') // placeholder data for layer
+  const [schemaContent, setSchemaContent] = useState(`
+    {
+      "version": 3,
+      "editor": [
+        {
+          "field": "comment"
+        },
+        {
+          "field": "name"
+        }
+      ]
+    }
+  `)
+
+  const [editor, setEditor] = useState<any>(JSON.parse(schemaContent).editor) // validate ?!
   
   const formMethods = useForm({
       reValidateMode: 'onSubmit',
       defaultValues: {
-        editor: editor
+        editor,
+        layerName
       }
   })
 
-  const onSubmit = useCallback(data => console.log(JSON.stringify(data, null, '  ')), [])
+  const onSubmit = useCallback(data => {
+    // let result = data
+    // if(typeof data.editor === 'object') {
+    //   const editor = JSON.stringify(data.editor)
+    //   result.editor = editor
+    // }
+    // console.log('result', result)
+    console.log('data', data)
+    console.log(data?.editor?.[1])
+  }, [])
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <Form
         onSubmit={formMethods.handleSubmit(onSubmit)}
         layout='vertical'
         ref={ref}
+        style={{
+          width: '900px'
+        }}
       >
-        <Controller
-          as={<Parent initial={editor} />}
-          name='editor'
-        />
+        <FormAntd.Item
+          label={'layer name'}
+        >
+          <Controller
+            as={Input}
+            name='layerName'
+            control={formMethods.control}
+          />
+        </FormAntd.Item>
 
-        <Button htmlType="submit" style={{width: '500px', height: '50px'}}>
+        <FormAntd.Item
+          label={'SCHEMA COMPONENT'}
+        >
+          <Parent 
+
+          />
+        </FormAntd.Item>
+
+        <Button 
+          htmlType="submit"
+          style={{width: '100%', height: '50px'}}
+          type='primary'  
+        >
           Submit
         </Button>
       </Form>
-    </FormContext>
+    </FormProvider>
   )
 }

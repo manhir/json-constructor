@@ -1,43 +1,42 @@
 import AceEditor from "react-ace";
-import { Tabs } from 'antd';
+import { Tabs, Button, Input } from 'antd';
 import { Constructor } from "../Constructor";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
+import { Code } from "../Code";
 
 const { TabPane } = Tabs 
 
 interface IParentProps {
-    initial?: any
+    
 }
 
 export const Parent: React.FC<IParentProps> = props => {
 
-    const { watch, getValues, reset } = useFormContext()
+    const { watch, reset, setValue, control } = useFormContext()
+    const [state, setState] = useState(JSON.stringify(watch('editor')))
 
     return (
         <>
-        <div style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-        }}>
-            <AceEditor
+            <Tabs 
+                defaultActiveKey="1"
                 style={{
-                    border: '1px solid black'
+                    width: '100%'
                 }}
-                mode='json'
-                value={JSON.stringify(watch({nest: true}).editor, null, '   ')} // watch('editor') is 1 action behind
-                onChange={(value, e) => reset({ editor: JSON.parse(value) })} // VALIDATE ! ! !
-            />
-            <Tabs defaultActiveKey="1">
-                <TabPane tab="FORM" key="1">
-                    <Constructor />
+                onChange={key => key !== 'code' ? null : setState(JSON.stringify(watch('editor'), null, '   '))}
+            >
+                <TabPane tab="CONSTRUCTOR" key="constructor">
+                    <Constructor
+                    
+                    />
+                </TabPane>
+                <TabPane tab="CODE" key="code">
+                <Code key='2' 
+                    state={state}
+                    setState={setState}
+                />
                 </TabPane>
             </Tabs>
-            
-            <div>
-                INITIAL FORM SATATE <br/><br/>
-                {JSON.stringify(props.initial, null, ' ')}
-            </div>
-        </div>
         </>
     )
 }
