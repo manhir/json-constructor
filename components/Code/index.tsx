@@ -1,19 +1,15 @@
-import { Controller, useFormContext } from "react-hook-form"
-import AceEditor from "react-ace";
-import { useState, useEffect } from "react";
-import { Button } from "antd";
+import { useFormContext } from 'react-hook-form'
+import AceEditor from 'react-ace'
 
 export const Code: React.FC<any> = ({ state, setState}) => {
     
-    const { watch, reset } = useFormContext()    
+    const { reset } = useFormContext()    
     
     return (
         <>
-            {/* <Button
-                onClick={() => {setState(JSON.stringify(watch().editor, null, '   '))}}
-            >SYNC CONSTRUCTOR TO CODE</Button> */}
             <AceEditor
                 value={state}
+                debounceChangePeriod={300}
                 onChange={(value, e) => {
                     setState(value)
                     try {

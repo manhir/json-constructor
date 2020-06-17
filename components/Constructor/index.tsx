@@ -1,41 +1,70 @@
-import { Controller, useFieldArray, useFormContext } from "react-hook-form"
-import { Input, Form, Button } from "antd"
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
+import { Input, Form, Button, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { RenderField } from './RenderField'
 
-interface IConstructorProps {
-    // fields: any
-}
-
-export const Constructor: React.FC<IConstructorProps> = props => {
+export const Constructor: React.FC = props => {
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
     })
 
+    const { watch } = useFormContext()
+
     return (
         <div style={{
             display: 'flex',
-            flexDirection: 'column'
-        }}> 
-            <Button
-                icon={<PlusOutlined />}
-                onClick={() => {append({field: "NEW ITEM"})}}
-            >ADD</Button>
+            flexDirection: 'column',
+        }}>
+            <div style={{
+                paddingBottom: '5%'
+            }}>
+                <Button
+                    icon={<PlusOutlined />}
+                    onClick={() => {append({
+                        field: "NEW ITEM",
+                        view: ['value'],
+                    })}}
+                >ADD</Button>
+            </div>
             {fields.map((field, index) => (
-                <Form.Item
-                    key={field.id}
-                    label={`${field.id}`}
+                <div key={field.id}
+                    style={{ border: 'solid 1px black' }}
                 >
-                    <Controller
-                        as={<Input />}
-                        name={`editor[${index}].field`}
-                        defaultValue={field.field} // to populate items added in constructor
-                    />
-                    <Button
-                        danger
-                        onClick={() => remove(index)}
-                    >DELETE</Button>
-                </Form.Item>
+                    <Form.Item
+                        label={`${field.field}`}
+                    >
+                        <Controller
+                            as={<Input />}
+                            name={`editor[${index}].field`}
+                            defaultValue={field.field}
+                        />    
+                    </Form.Item>
+                    <Form.Item
+                        label='type'
+                    >
+                        <Controller
+                            as={<Select />}
+                            name={`editor[${index}].view[0]`}
+                            defaultValue={field.view[0]}
+                            options={['value', 'select'].map(x => ({label: x, value: x}))}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label='field settings'
+                    >
+                        <RenderField
+                            index={index}
+                            field={watch(`editor[${index}]`)}
+                        />
+                        
+                        <Button
+                            danger
+                            onClick={() => remove(index)}
+                        >DELETE</Button>
+                    </Form.Item>
+                </div>
             ))}
         </div>
     )
