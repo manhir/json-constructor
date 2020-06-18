@@ -35,7 +35,7 @@ export default function Home() {
       reValidateMode: 'onSubmit',
       defaultValues: {
         editor,
-        layerName
+        // layerName
       }
   })
 
@@ -68,7 +68,7 @@ export default function Home() {
           }}
         >
           <h1>FORM</h1>
-          <FormAntd.Item
+          {/* <FormAntd.Item
             label={'layer name'}
           >
             <Controller
@@ -76,7 +76,7 @@ export default function Home() {
               name='layerName'
               control={formMethods.control}
             />
-          </FormAntd.Item>
+          </FormAntd.Item> */}
 
           <FormAntd.Item
             label={'SCHEMA COMPONENT'}
