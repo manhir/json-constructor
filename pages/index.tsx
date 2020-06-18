@@ -64,7 +64,7 @@ export default function Home() {
           layout='vertical'
           ref={ref}
           style={{
-            width: '500px'
+            width: '400px'
           }}
         >
           <h1>FORM</h1>

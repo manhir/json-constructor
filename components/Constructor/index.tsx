@@ -46,8 +46,8 @@ export const Constructor: React.FC = props => {
                         <Controller
                             as={<Select />}
                             name={`editor[${index}].view[0]`}
-                            defaultValue={field.view[0]}
-                            options={['value', 'select'].map(x => ({label: x, value: x}))}
+                            defaultValue={field.view[0] ?? 'select'} // should be from field types directly
+                            options={['value', 'select'].map(x => ({label: x, value: x}))} // field type options from 1 place !!
                         />
                     </Form.Item>
 
