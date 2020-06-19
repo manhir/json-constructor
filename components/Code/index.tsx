@@ -6,7 +6,7 @@ import json5 from 'json5'
 
 export const Code: React.FC<any> = ({ state, setState}) => {
     
-    const { reset, watch, setValue } = useFormContext()
+    const { reset } = useFormContext()
     const [synced, setSynced] = useState(true)
 
     const onChange = useCallback((value, e) => {

@@ -13,7 +13,7 @@ export const Constructor: React.FC = props => {
     })
 
     const fieldTypes = [
-        'value',
+        'input',
         'select',
     ]
 
@@ -45,8 +45,6 @@ export const Constructor: React.FC = props => {
                 break
         }
     }, [append])
-
-    console.log(fields)
 
     return (
         <div style={{
@@ -81,22 +79,27 @@ export const Constructor: React.FC = props => {
                     style={{ border: 'solid 1px black' }}
                 >
                     <Form.Item
-                        label={`${field.value[0]}`}
+                        label={`field name & field label`}
                     >
                         <Controller
                             as={<Input />}
                             name={`editor[${index}][0]`}
-                            defaultValue={field.field}
-                        />    
+                            defaultValue={field[0]}
+                        />
+                        <Controller
+                            as={<Input />}
+                            name={`editor[${index}][1][1].label`}
+                            // defaultValue={field[0]}
+                        />
                     </Form.Item>
                     <Form.Item
                         label='type'
                     >
                         <Controller
                             as={<Select />}
-                            name={`editor[${index}].view[0]`}
-                            defaultValue={field.view?.[0] ?? 'value'} // should be from field types directly
-                            options={['value', 'select'].map(x => ({label: x, value: x}))} // field type options from 1 place !!
+                            name={`editor[${index}][1][0]`}
+                            defaultValue={field.value[1][0] ?? fieldTypes[0]}
+                            options={fieldTypes.map(x => ({label: x, value: x}))}
                         />
                     </Form.Item>
 

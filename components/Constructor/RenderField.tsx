@@ -5,24 +5,17 @@ import { useState } from 'react'
 
 export const RenderField: React.FC<any> = ({ field, index }) => {
 
-    const fieldType = field?.view?.[0]
+    const fieldType = field?.[1]?.[0]
 
     const [state, setState] = useState(null)
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
-        name: `editor[${index}].view[1]`,
+        name: `editor[${index}][1][2]`,
     })
     
     switch (fieldType) {
-        case 'value': // value should not submit to view[1]
-            return (
-                null
-                // <Controller
-                //     as={<Input />}
-                //     name={`editor[${index}].view[1]`}
-                //     defaultValue={''}
-                // />
-            )
+        case 'input': // value should not submit to view[1]
+            return null
             break
             
         case 'select':
@@ -37,9 +30,10 @@ export const RenderField: React.FC<any> = ({ field, index }) => {
                         >
                             <Controller
                                 as={<Input />}
-                                name={`editor[${index}].view[1][${subIndex}]`}
+                                name={`editor[${index}][1][2][${subIndex}][1].value`}
                                 defaultValue={subField.value}
                             />
+                            {console.log(subField.value)}
                             <Button
                                 danger
                                 onClick={() => remove(subIndex)}
