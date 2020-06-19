@@ -64,6 +64,11 @@ export const Constructor: React.FC = props => {
                     ADD <DownOutlined />
                     </Button>
                 </Dropdown>
+                <Button
+                    onClick={() => console.log(watch('editor'))}
+                >
+                    LOG WATCH
+                </Button>
             </div>
             {fields.map((field, index) => (
                 <div key={field.id}
@@ -91,6 +96,7 @@ export const Constructor: React.FC = props => {
                             name={`editor[${index}][1][0]`}
                             defaultValue={field.value[1][0] ?? fieldTypes[0]}
                             options={fieldTypes.map(x => ({label: x, value: x}))}
+                            onChange={value => console.log(value)}
                         />
                     </Form.Item>
 
@@ -100,6 +106,7 @@ export const Constructor: React.FC = props => {
                         <RenderField
                             index={index}
                             field={watch(`editor[${index}]`)}
+                            fieldValue={field.value} // needs better name OR implementation
                         />
                         
                         <Button

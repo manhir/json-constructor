@@ -1,9 +1,9 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { Input, Select, Divider, List, Button } from 'antd'
+import { Input, Select, List, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 
-export const RenderField: React.FC<any> = ({ field, index }) => {
+export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
 
     const fieldType = field?.[1]?.[0]
 
@@ -12,17 +12,21 @@ export const RenderField: React.FC<any> = ({ field, index }) => {
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: `editor[${index}][1][2]`,
     })
-
-    const { setValue } = useFormContext()
     
     switch (fieldType) {
-        case 'input': // value should not submit to view[1]
+        case 'input': // input should not submit to value in field
             return null
             break
             
         case 'select':
             return (
-                <>
+                <>        
+                <Controller 
+                    as={<Select />}
+                    name={`editor[${index}][1][1].mode`}
+                    options={['multiple', 'tags'].map(x => ({label: x, value: x}))} // should not be from local array 
+                    defaultValue={fieldValue[1][1].mode}
+                />
                 <List
                     itemLayout="horizontal"
                     dataSource={fields}
@@ -30,15 +34,16 @@ export const RenderField: React.FC<any> = ({ field, index }) => {
                         <List.Item
                             key={subField.id}
                         >
-                            <Controller
+                            <Controller // invisible for ['option', {!@#}]
                                 as={<Input />}
                                 name={`editor[${index}][1][2][${subIndex}][0]`}
                                 style={{ display: 'none' }}
+                                defaultValue={subField.value[0]}
                             />
                             <Controller
                                 as={<Input />}
                                 name={`editor[${index}][1][2][${subIndex}][1].value`}
-                                defaultValue={subField.value}
+                                defaultValue={subField.value[1].value}
                             />
                             <Button
                                 danger
