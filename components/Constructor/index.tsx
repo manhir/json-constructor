@@ -1,13 +1,48 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { Input, Form, Button, Select } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Input, Form, Button, Select, Dropdown, Menu } from 'antd'
+import { PlusOutlined, DownOutlined } from '@ant-design/icons'
 import { RenderField } from './RenderField'
+import { useCallback } from 'react'
 
 export const Constructor: React.FC = props => {
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
     })
+
+    const fieldTypes = [
+        'value',
+        'select',
+    ]
+
+    const onClick = useCallback(item => {
+        switch (item.key) {
+            case 'value':
+                append({
+                    field: "New field",
+                    view: [
+                        "value"
+                    ]
+                })
+                break
+
+            case 'select':
+                append({
+                    field: "New field",
+                    view: [
+                        "select",
+                        [
+                            "Option 1",
+                            "Option 2"
+                        ]
+                    ]
+                })
+                break
+        
+            default:
+                break
+        }
+    }, [append])
 
     const { watch } = useFormContext()
 
@@ -19,13 +54,25 @@ export const Constructor: React.FC = props => {
             <div style={{
                 paddingBottom: '5%'
             }}>
-                <Button
-                    icon={<PlusOutlined />}
-                    onClick={() => {append({
-                        field: "NEW ITEM",
-                        view: ['value'],
-                    })}}
-                >ADD</Button>
+                <Dropdown 
+                    overlay={(
+                        <Menu
+                            onClick={onClick}
+                        >
+                            {fieldTypes.map(type => (
+                                <Menu.Item
+                                    key={type}
+                                >
+                                    {type}
+                                </Menu.Item>
+                            ))}
+                        </Menu>
+                    )}
+                >
+                    <Button>
+                    ADD <DownOutlined />
+                    </Button>
+                </Dropdown>
             </div>
             {fields.map((field, index) => (
                 <div key={field.id}
@@ -46,7 +93,7 @@ export const Constructor: React.FC = props => {
                         <Controller
                             as={<Select />}
                             name={`editor[${index}].view[0]`}
-                            defaultValue={field.view[0] ?? 'select'} // should be from field types directly
+                            defaultValue={field.view?.[0] ?? 'value'} // should be from field types directly
                             options={['value', 'select'].map(x => ({label: x, value: x}))} // field type options from 1 place !!
                         />
                     </Form.Item>

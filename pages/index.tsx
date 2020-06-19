@@ -14,7 +14,7 @@ export default function Home() {
   "editor": [
     { "field": "dateCreated", "view": ["value"] },
     { "field": "age", "view": ["select", [
-        "Дети", "Молодежь", "Взрослые", "Пенсионеры"
+        "Дети", "Молодежь", "Взрослые"
     ]] }
   ]
 }

@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 export const RenderField: React.FC<any> = ({ field, index }) => {
 
-    const fieldType = field.view[0]
+    const fieldType = field?.view?.[0]
 
     const [state, setState] = useState(null)
 

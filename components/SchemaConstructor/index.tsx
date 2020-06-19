@@ -13,7 +13,7 @@ export const SchemaConstructor: React.FC = props => {
     const onChange = useCallback(key => 
         key !== 'code' 
             ? null 
-            : setState(JSON.stringify(watch('editor'), null, '   ')),
+            : setState(JSON.stringify(watch('editor'), null, '    ')),
         [setState, watch]
     )
 
