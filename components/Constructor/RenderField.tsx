@@ -1,4 +1,4 @@
-import { Controller, useFieldArray } from 'react-hook-form'
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Select, Divider, List, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useState } from 'react'
@@ -12,6 +12,8 @@ export const RenderField: React.FC<any> = ({ field, index }) => {
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: `editor[${index}][1][2]`,
     })
+
+    const { setValue } = useFormContext()
     
     switch (fieldType) {
         case 'input': // value should not submit to view[1]
@@ -30,10 +32,14 @@ export const RenderField: React.FC<any> = ({ field, index }) => {
                         >
                             <Controller
                                 as={<Input />}
+                                name={`editor[${index}][1][2][${subIndex}][0]`}
+                                style={{ display: 'none' }}
+                            />
+                            <Controller
+                                as={<Input />}
                                 name={`editor[${index}][1][2][${subIndex}][1].value`}
                                 defaultValue={subField.value}
                             />
-                            {console.log(subField.value)}
                             <Button
                                 danger
                                 onClick={() => remove(subIndex)}

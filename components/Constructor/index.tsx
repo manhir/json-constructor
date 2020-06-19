@@ -19,26 +19,17 @@ export const Constructor: React.FC = props => {
 
     const onClick = useCallback(item => {
         switch (item.key) {
-            case 'value':
-                append({
-                    field: "New field",
-                    view: [
-                        "value"
-                    ]
-                })
+            case fieldTypes[0]: // input
+                append([['New field', [fieldTypes[0], { label: 'Field label' }]]])
                 break
 
-            case 'select':
-                append({
-                    field: "New field",
-                    view: [
-                        "select",
-                        [
-                            "Option 1",
-                            "Option 2"
-                        ]
-                    ]
-                })
+            case fieldTypes[1]: // select
+                append([
+                    ['New field', [fieldTypes[1], { label: 'Field label', mode: 'multiple' }, [
+                        ['option', { value: 'Option 1' }],
+                        ['option', { value: 'Option 2' }],
+                    ]]]
+                ])
                 break
         
             default:
@@ -84,12 +75,12 @@ export const Constructor: React.FC = props => {
                         <Controller
                             as={<Input />}
                             name={`editor[${index}][0]`}
-                            defaultValue={field[0]}
+                            defaultValue={field.value[0]}
                         />
                         <Controller
                             as={<Input />}
                             name={`editor[${index}][1][1].label`}
-                            // defaultValue={field[0]}
+                            defaultValue={field.value[1][1].label}
                         />
                     </Form.Item>
                     <Form.Item
