@@ -1,17 +1,18 @@
 import { useFormContext } from 'react-hook-form'
 import AceEditor from 'react-ace'
 import { useCallback, useState } from 'react'
-import { Alert } from 'antd'
+import { Alert, Button } from 'antd'
+import json5 from 'json5'
 
 export const Code: React.FC<any> = ({ state, setState}) => {
     
-    const { reset } = useFormContext()
+    const { reset, watch, setValue } = useFormContext()
     const [synced, setSynced] = useState(true)
 
     const onChange = useCallback((value, e) => {
         setState(value)
         try {
-            const valueObj = JSON.parse(value)
+            const valueObj = json5.parse(value)
             reset({editor: valueObj})
             setSynced(true)
         } catch {
@@ -28,7 +29,11 @@ export const Code: React.FC<any> = ({ state, setState}) => {
                 mode='json'
             />
             <Alert
-                message={synced ? 'Synced' : 'Not synced'}
+                message={(
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        {synced ? 'Synced' : 'Not synced'}
+                    </div>
+                )}
                 type={synced ? 'info' : 'warning'}
                 showIcon
             />

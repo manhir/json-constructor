@@ -4,32 +4,32 @@ import { useCallback, useRef, useState, useEffect } from 'react'
 import { FormProvider, useForm, Controller, useFormContext } from 'react-hook-form'
 import { Button, Input, Form as FormAntd, ConfigProvider } from 'antd'
 import AceEditor from 'react-ace'
+import json5 from 'json5'
 
 export default function Home() {
   const ref = useRef<HTMLFormElement>()
-  const [layerName, setLayerName] = useState('name of layer') // placeholder data for layer
+  const [layerName, setLayerName] = useState('name of layer') // placeholder data for regular form fields
   const [schemaContent, setSchemaContent] = useState(`
 {
   "version": 3,
   "editor": [
-    { "field": "dateCreated", "view": ["value"] },
-    { "field": "age", "view": ["select", [
-        "Дети", "Молодежь", "Взрослые"
-    ]] }
+    ['groupSize', ['input', { label: 'Количество' }]],
+    [
+      'male', 
+      [
+        'select', { label: 'М', mode: 'multiple' }, 
+        [
+          ['option', { value: 'молодежь (18-30)' }],
+          ['option', { value: 'взрослый (30-50)' }],
+          ['option', { value: 'пенсионного возраста' }],
+        ]
+      ]
+    ],
   ]
 }
   `)
-//   "editor": [
-//     {
-//       "field": "comment"
-//     },
-//     {
-//       "field": "name"
-//     }
-//   ]
-// }
 
-  const [editor, setEditor] = useState<any>(JSON.parse(schemaContent).editor) // validate ?!
+  const [editor, setEditor] = useState<any>(json5.parse(schemaContent).editor) // no validate, cause its from server
   
   const formMethods = useForm({
       reValidateMode: 'onSubmit',
@@ -68,16 +68,6 @@ export default function Home() {
           }}
         >
           <h1>FORM</h1>
-          {/* <FormAntd.Item
-            label={'layer name'}
-          >
-            <Controller
-              as={Input}
-              name='layerName'
-              control={formMethods.control}
-            />
-          </FormAntd.Item> */}
-
           <FormAntd.Item
             label={'SCHEMA COMPONENT'}
             style={{border: 'solid 1px grey'}}
@@ -101,7 +91,7 @@ export default function Home() {
           DATA
         </h1>
         <AceEditor
-          value={'ORIGINAL SCHEMA' + schemaContent + 'SUBMITTED\n' + (!submitted ? 'nothing' : JSON.stringify(submitted, null, '   '))}
+          value={'ORIGINAL SCHEMA' + schemaContent + 'SUBMITTED\n' + (!submitted ? 'nothing' : json5.stringify(submitted, null, '   '))}
         />
       </div>
     </div>

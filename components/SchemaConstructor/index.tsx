@@ -3,17 +3,20 @@ import { Constructor } from '../Constructor'
 import { useFormContext } from 'react-hook-form'
 import { useState, useCallback } from 'react'
 import { Code } from '../Code'
+import json5 from 'json5'
 
 const { TabPane } = Tabs 
 
 export const SchemaConstructor: React.FC = props => {
 
     const { watch } = useFormContext()
-    const [state, setState] = useState(JSON.stringify(watch('editor')))
+    const [state, setState] = useState(typeof watch('editor') === 'string' 
+        ? watch('editor')
+        : json5.stringify(watch('editor')))
     const onChange = useCallback(key => 
         key !== 'code' 
             ? null 
-            : setState(JSON.stringify(watch('editor'), null, '    ')),
+            : setState(json5.stringify(watch('editor'), null, '    ')), 
         [setState, watch]
     )
 

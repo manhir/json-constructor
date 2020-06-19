@@ -6,6 +6,8 @@ import { useCallback } from 'react'
 
 export const Constructor: React.FC = props => {
 
+    const { watch } = useFormContext() 
+
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
     })
@@ -44,7 +46,7 @@ export const Constructor: React.FC = props => {
         }
     }, [append])
 
-    const { watch } = useFormContext()
+    console.log(fields)
 
     return (
         <div style={{
@@ -79,11 +81,11 @@ export const Constructor: React.FC = props => {
                     style={{ border: 'solid 1px black' }}
                 >
                     <Form.Item
-                        label={`${field.field}`}
+                        label={`${field.value[0]}`}
                     >
                         <Controller
                             as={<Input />}
-                            name={`editor[${index}].field`}
+                            name={`editor[${index}][0]`}
                             defaultValue={field.field}
                         />    
                     </Form.Item>
