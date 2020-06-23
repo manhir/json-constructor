@@ -1,6 +1,6 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Form, Button, Select, Dropdown, Menu } from 'antd'
-import { PlusOutlined, DownOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import { RenderField } from './RenderField'
 import { useCallback } from 'react'
 
@@ -20,15 +20,14 @@ export const Constructor: React.FC = props => {
     const onClick = useCallback(item => {
         switch (item.key) {
             case fieldTypes[0]: // input
-                append([['New field', [fieldTypes[0], { label: 'Field label' }]]])
+                append([ ['New field', [fieldTypes[0], { label: 'Field label' }]] ])
                 break
 
             case fieldTypes[1]: // select
                 append([
-                    ['New field', [fieldTypes[1], { label: 'Field label', mode: 'multiple' }, [
-                        ['option', { value: 'Option 1' }],
-                        ['option', { value: 'Option 2' }],
-                    ]]]
+                    ['New field', [
+                        fieldTypes[1], { label: 'Field label', mode: 'multiple' }, []
+                    ]]
                 ])
                 break
         
@@ -38,17 +37,17 @@ export const Constructor: React.FC = props => {
     }, [append])
 
     const onTypeChange = useCallback((value, index) => {
-        // clear and set some values
+        // clear some values
         const optionsValue = () => {
             switch (value) {
                 case fieldTypes[0]: // input
                     return []
     
                 case fieldTypes[1]: // select
-                    return([
-                        ['option', { value: 'Option 1' }],
-                        ['option', { value: 'Option 2' }],
-                    ])
+                    return []
+                    // return([
+                    //     ['option', { value: 'Option 1' }],
+                    // ])
             
                 default:
                     return []
@@ -67,7 +66,7 @@ export const Constructor: React.FC = props => {
         
         let editor = watch('editor')
         editor[index][1][2] = optionsValue() // set options
-        editor[index][1][1].mode = modeValue()
+        editor[index][1][1].mode = modeValue() // set mode
         reset({ 'editor': editor })
         
     }, [watch, reset])
@@ -112,15 +111,15 @@ export const Constructor: React.FC = props => {
                     <Form.Item
                         label={`field name & field label`}
                     >
-                        <Controller
+                        <Controller // data field name
                             as={<Input />}
                             name={`editor[${index}][0]`}
                             defaultValue={field.value[0]}
                         />
-                        <Controller
+                        <Controller // label name
                             as={<Input />}
                             name={`editor[${index}][1][1].label`}
-                            defaultValue={field.value[1][1].label}
+                            defaultValue={field.value[1]?.[1]?.label}
                         />
                     </Form.Item>
                     <Form.Item
@@ -138,7 +137,7 @@ export const Constructor: React.FC = props => {
                                 />
                             )}
                             name={`editor[${index}][1][0]`}
-                            defaultValue={field.value[1][0] ?? fieldTypes[0]}
+                            defaultValue={field.value[1]?.[0] ?? fieldTypes[0]}
                         />
                     </Form.Item>
 
