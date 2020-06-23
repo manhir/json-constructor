@@ -5,7 +5,7 @@ import { FormProvider, useForm, Controller, useFormContext } from 'react-hook-fo
 import { Button, Input, Form as FormAntd, ConfigProvider, Modal } from 'antd'
 import AceEditor from 'react-ace'
 import json5 from 'json5'
-import { FeaturePropertiesEditor } from '../components/FeaturePropertiesEditor'
+import { ViewForm } from '../components/ViewForm'
 
 export default function Home() {
   const ref = useRef<HTMLFormElement>()
@@ -103,10 +103,10 @@ export default function Home() {
       </div>
     </div>
     <Modal
-      visible={false}
+      visible
     >
-      <FeaturePropertiesEditor
-        data={editor}
+      <ViewForm
+        schema={editor}
       />
     </Modal>
     </>
