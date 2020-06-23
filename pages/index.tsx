@@ -69,7 +69,7 @@ export default function Home() {
             width: '400px'
           }}
         >
-          <h1>FORM</h1>
+          <h1>CONSTRUCTOR</h1>
           <Button 
             htmlType="submit"
             style={{width: '100%', height: '50px'}}
@@ -101,16 +101,20 @@ export default function Home() {
           value={'ORIGINAL SCHEMA' + schemaContent + 'SUBMITTED\n' + (!submitted ? 'nothing' : json5.stringify(submitted, null, '   '))}
         />
       </div>
+      <div>
+        <h1>
+          FORM
+        </h1>
+        {false ? null : (  
+          <ViewForm
+            style={{
+              width: '400px'
+            }}
+            schema={(submitted as any)?.editor ?? []}
+          />
+        )}
+      </div>
     </div>
-    <Modal
-      // visible={submitted !== undefined}
-      visible={false}
-      footer={null}
-    >
-      <ViewForm
-        schema={(submitted as any)?.editor ?? []}
-      />
-    </Modal>
     </>
   )
 }

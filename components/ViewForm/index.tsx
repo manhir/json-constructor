@@ -75,7 +75,6 @@ export function askInputFactory(item: any, defaultOptions: any) {
 }
 
 export const ViewForm: React.FC<any> = props => {
-    console.log(props.schema)
 
     const form = props.schema.map(askItemFactory)
     const initialValues: object = form.reduce((acc, item) => ({
@@ -89,6 +88,7 @@ export const ViewForm: React.FC<any> = props => {
         <Form
             onSubmit={() => null}
             layout={'vertical'}
+            style={props.style}
         >
             {form.map(item => {
                 const { field } = item
@@ -179,14 +179,6 @@ export const ViewForm: React.FC<any> = props => {
                     //     )
                 }
             })}
-
-            <Button 
-                htmlType="submit"
-                style={{width: '100%', height: '50px'}}
-                type='primary'  
-            >
-                Submit
-            </Button>
         </Form>
     )
 }
