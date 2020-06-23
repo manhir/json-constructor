@@ -68,13 +68,6 @@ export default function Home() {
           }}
         >
           <h1>FORM</h1>
-          <FormAntd.Item
-            label={'SCHEMA COMPONENT'}
-            style={{border: 'solid 1px grey'}}
-          >
-            <SchemaConstructor />
-          </FormAntd.Item>
-
           <Button 
             htmlType="submit"
             style={{width: '100%', height: '50px'}}
@@ -82,6 +75,18 @@ export default function Home() {
           >
             Submit
           </Button>
+          {/* <FormAntd.Item label='regular form field' > 
+            <Controller
+              as={<Input />}
+              name={`layerName`}
+            />
+          </FormAntd.Item> */}
+          <FormAntd.Item
+            label={'SCHEMA COMPONENT'}
+            style={{border: 'solid 1px grey'}}
+          >
+            <SchemaConstructor />
+          </FormAntd.Item>
         </Form>
       </ConfigProvider>
       </FormProvider>

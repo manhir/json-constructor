@@ -11,6 +11,7 @@ export const Code: React.FC<any> = ({ state, setState}) => {
 
     const onChange = useCallback((value, e) => {
         setState(value)
+        setSynced(null)
         try {
             const valueObj = json5.parse(value)
             reset({editor: valueObj})
@@ -18,7 +19,7 @@ export const Code: React.FC<any> = ({ state, setState}) => {
         } catch {
             setSynced(false)
         }
-    }, [setState])
+    }, [setState, setSynced])
     
     return (
         <>

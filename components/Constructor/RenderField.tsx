@@ -14,9 +14,12 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
     })
     
     switch (fieldType) {
-        case 'input': // input should not submit to value in field
-            return null
-            break
+        case 'input':
+            return (
+                <div>
+                    this type has no settings
+                </div>
+            )
             
         case 'select':
             return (
@@ -25,7 +28,7 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
                     as={<Select />}
                     name={`editor[${index}][1][1].mode`}
                     options={['multiple', 'tags'].map(x => ({label: x, value: x}))} // should not be from local array 
-                    defaultValue={fieldValue[1][1].mode}
+                    defaultValue={fieldValue[1][1].mode ?? 'multiple'} // should be from array
                 />
                 <List
                     itemLayout="horizontal"
@@ -34,20 +37,20 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
                         <List.Item
                             key={subField.id}
                         >
-                            <Controller // invisible for ['option', {!@#}]
+                            <Controller // invisible, for ['option', {!@#}]
                                 as={<Input />}
                                 name={`editor[${index}][1][2][${subIndex}][0]`}
                                 style={{ display: 'none' }}
-                                defaultValue={subField.value[0]}
+                                defaultValue={'option'} // subField.value[0]
                             />
-                            <Controller
+                            <Controller // option
                                 as={<Input />}
                                 name={`editor[${index}][1][2][${subIndex}][1].value`}
-                                defaultValue={subField.value[1].value}
-                            />
+                                defaultValue={subField.value?.[1]?.value}
+                            /> 
                             <Button
                                 danger
-                                onClick={() => remove(subIndex)}
+                                onClick={() => remove([subIndex])}
                             >Delete</Button>
                         </List.Item>
                     )}
@@ -55,7 +58,7 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
                         <Input.Search
                             value={state}
                             onChange={e => setState(e.target.value)}
-                            onSearch={(value, e) => {append({value}); setState(null)}}
+                            onSearch={(value, e) => {append([['option', {value}]]); setState(null)}}
                             enterButton={<><PlusOutlined />Add</>} 
                         />
                     )}

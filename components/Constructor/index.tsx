@@ -6,7 +6,7 @@ import { useCallback } from 'react'
 
 export const Constructor: React.FC = props => {
 
-    const { watch } = useFormContext() 
+    const { watch, reset } = useFormContext() 
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
@@ -36,6 +36,41 @@ export const Constructor: React.FC = props => {
                 break
         }
     }, [append])
+
+    const onTypeChange = useCallback((value, index) => {
+        // clear and set some values
+        const optionsValue = () => {
+            switch (value) {
+                case fieldTypes[0]: // input
+                    return []
+    
+                case fieldTypes[1]: // select
+                    return([
+                        ['option', { value: 'Option 1' }],
+                        ['option', { value: 'Option 2' }],
+                    ])
+            
+                default:
+                    return []
+            }
+        }
+
+        const modeValue = () => {
+            switch (value) {
+                case fieldTypes[0]: // input
+                    return null
+            
+                default:
+                    return null
+            }
+        }
+        
+        let editor = watch('editor')
+        editor[index][1][2] = optionsValue() // set options
+        editor[index][1][1].mode = modeValue()
+        reset({ 'editor': editor })
+        
+    }, [watch, reset])
 
     return (
         <div style={{
@@ -92,11 +127,18 @@ export const Constructor: React.FC = props => {
                         label='type'
                     >
                         <Controller
-                            as={<Select />}
+                            render={props => (
+                                <Select
+                                    {...props}            
+                                    onChange={value => {
+                                        props.onChange(value)
+                                        onTypeChange(value, index)
+                                    }} 
+                                    options={fieldTypes.map(x => ({label: x, value: x}))}
+                                />
+                            )}
                             name={`editor[${index}][1][0]`}
                             defaultValue={field.value[1][0] ?? fieldTypes[0]}
-                            options={fieldTypes.map(x => ({label: x, value: x}))}
-                            onChange={value => console.log(value)}
                         />
                     </Form.Item>
 
