@@ -1,4 +1,4 @@
-import { Button, Input } from 'antd'
+import { Button, Input, Select } from 'antd'
 import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 // import * as F from '../F'
@@ -75,6 +75,7 @@ export function askInputFactory(item: any, defaultOptions: any) {
 }
 
 export const ViewForm: React.FC<any> = props => {
+    console.log(props.schema)
 
     const form = props.schema.map(askItemFactory)
     const initialValues: object = form.reduce((acc, item) => ({
@@ -136,7 +137,30 @@ export const ViewForm: React.FC<any> = props => {
                                         required: item.input.required,
                                         pattern: item.input.pattern,
                                     }}
-                                // }}
+                                />
+                            </FormAntd.Item>
+                        )
+                    
+                    case 'ASK_SELECT_INPUT':
+                        return (
+                            <FormAntd.Item
+                                key={field}
+                                label={item.input.label}
+                                help={errors[field]}
+                                required={isRequired}
+                            >
+                                <Controller
+                                    as={Select}
+                                    name={field}
+                                    defaultValue={initialValues[field]}
+                                    control={control}
+                                    placeholder={item.input.placeholder}
+                                    options={item.input.options}
+                                    // required={isRequired}
+                                    rules={{
+                                        required: item.input.required,
+                                        pattern: item.input.pattern,
+                                    }}
                                 />
                             </FormAntd.Item>
                         )

@@ -103,10 +103,12 @@ export default function Home() {
       </div>
     </div>
     <Modal
-      visible
+      // visible={submitted !== undefined}
+      visible={false}
+      footer={null}
     >
       <ViewForm
-        schema={editor}
+        schema={(submitted as any)?.editor ?? []}
       />
     </Modal>
     </>
