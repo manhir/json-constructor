@@ -2,9 +2,10 @@ import { SchemaConstructor } from '../components/SchemaConstructor'
 import { Form } from '../components/Form'
 import { useCallback, useRef, useState, useEffect } from 'react'
 import { FormProvider, useForm, Controller, useFormContext } from 'react-hook-form'
-import { Button, Input, Form as FormAntd, ConfigProvider } from 'antd'
+import { Button, Input, Form as FormAntd, ConfigProvider, Modal } from 'antd'
 import AceEditor from 'react-ace'
 import json5 from 'json5'
+import { FeaturePropertiesEditor } from '../components/FeaturePropertiesEditor'
 
 export default function Home() {
   const ref = useRef<HTMLFormElement>()
@@ -53,6 +54,7 @@ export default function Home() {
   }, [])
 
   return (
+    <>
     <div style={{
       display: 'flex',
       justifyContent: 'space-around'
@@ -100,5 +102,13 @@ export default function Home() {
         />
       </div>
     </div>
+    <Modal
+      visible={false}
+    >
+      <FeaturePropertiesEditor
+        data={editor}
+      />
+    </Modal>
+    </>
   )
 }
