@@ -1,7 +1,7 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Select, List, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
 
@@ -24,6 +24,14 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
     //         reset({ 'editor': editor })
     //     }
     // }, [])
+
+    const onAddOption = useCallback(
+        (value, e) => {
+            append([ ['option', {value}] ])
+            setState(null)
+        }, [append, setState]
+    )
+    const onAddOptionName = useCallback(e => setState(e.target.value), [setState])
     
     switch (fieldType) {
         case 'input':
@@ -69,15 +77,14 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
                     footer={(
                         <Input.Search
                             value={state}
-                            onChange={e => setState(e.target.value)}
-                            onSearch={(value, e) => {append([ ['option', {value}] ]); setState(null)}}
+                            onChange={onAddOptionName}
+                            onSearch={onAddOption}
                             enterButton={<><PlusOutlined />Add</>} 
                         />
                     )}
                 />
                 </>
             )
-            break
     
         default: 
             return null

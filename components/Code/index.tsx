@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { Alert, Button } from 'antd'
 import json5 from 'json5'
 
-export const Code: React.FC<any> = ({ state, setState}) => {
+export const Code: React.FC<any> = ({ state, setState }) => {
     
     const { reset } = useFormContext()
     const [synced, setSynced] = useState(true)
