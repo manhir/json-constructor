@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Form } from '../Form'
 // import { FormItem } from '../FormItem'
 import { Form as FormAntd } from 'antd'
+import { Console } from 'console'
 
 export function askItemFactory(ask: any) {
     const field = ask[0]
@@ -24,24 +25,26 @@ export function askItemFactory(ask: any) {
 }
 
 export function askInputFactory(item: any, defaultOptions: any) {
-    const [type, props] = item
+    const [type, props, askOptions] = item
     const options = {
         ...defaultOptions,
         ...props,
-        // ...ask[2],
+        // ...item[2],
     }
 
-    // if (Array.isArray(value)) {
-    //     return {
-    //         type: ASK_SELECT_INPUT,
-    //         label,
-    //         options: value.map(x => ({
-    //             key: x,
-    //             value: x,
-    //             label: x,
-    //         })),
-    //     }
-    // }
+    if (type === 'select') {
+        return {
+            type: 'ASK_SELECT_INPUT',
+            label: options.label,
+            required: options.required,
+            mode: options.mode,
+            options: askOptions.map(x => ({
+                // key: x,
+                value: x[1].value,
+                label: x[1].value,
+            })),
+        }
+    }
 
     if (type === 'text') {
         return {
@@ -66,7 +69,6 @@ export function askInputFactory(item: any, defaultOptions: any) {
 
     return {
         type: 'ASK_INPUT',
-        // type,
         label: options.label,
         placeholder: options.placeholder,
         required: options.required,
@@ -140,7 +142,7 @@ export const ViewForm: React.FC<any> = props => {
                                 />
                             </FormAntd.Item>
                         )
-                    
+
                     case 'ASK_SELECT_INPUT':
                         return (
                             <FormAntd.Item
@@ -152,31 +154,18 @@ export const ViewForm: React.FC<any> = props => {
                                 <Controller
                                     as={Select}
                                     name={field}
-                                    defaultValue={initialValues[field]}
+                                    // defaultValue={initialValues[field]}
                                     control={control}
-                                    placeholder={item.input.placeholder}
-                                    options={item.input.options}
                                     // required={isRequired}
+                                    mode={item.input.mode}
+                                    showArrow
+                                    options={item.input.options}
                                     rules={{
                                         required: item.input.required,
-                                        pattern: item.input.pattern,
                                     }}
                                 />
                             </FormAntd.Item>
                         )
-
-                    // case ASK_SELECT_INPUT:
-                    //     return (
-                    //         <Field
-                    //             key={field}
-                    //             name={field}
-                    //             props={{
-                    //                 label: item.input.label,
-                    //                 options: item.input.options,
-                    //             }}
-                    //             component={F.Select}
-                    //         />
-                    //     )
                 }
             })}
         </Form>

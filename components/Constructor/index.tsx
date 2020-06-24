@@ -1,12 +1,12 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Form, Button, Select, Dropdown, Menu } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
-import { RenderField } from './RenderField'
+import { ResolveField } from './ResolveField'
 import { useCallback } from 'react'
 
 export const Constructor: React.FC = props => {
 
-    const { watch, reset } = useFormContext() 
+    const { watch, reset, setValue, unregister } = useFormContext() 
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
@@ -17,7 +17,7 @@ export const Constructor: React.FC = props => {
         'select',
     ]
 
-    const onClick = useCallback(item => {
+    const onAdd = useCallback(item => {
         switch (item.key) {
             case fieldTypes[0]: // input
                 append([ ['New field', [fieldTypes[0], { label: 'Field label' }]] ])
@@ -26,7 +26,9 @@ export const Constructor: React.FC = props => {
             case fieldTypes[1]: // select
                 append([
                     ['New field', [
-                        fieldTypes[1], { label: 'Field label', mode: 'multiple' }, []
+                        fieldTypes[1], { label: 'Field label', mode: 'multiple' }, [
+                            // ['option', { value: 'Option 1' }],
+                        ]
                     ]]
                 ])
                 break
@@ -34,42 +36,40 @@ export const Constructor: React.FC = props => {
             default:
                 break
         }
-    }, [append])
+    }, [])
 
-    const onTypeChange = useCallback((value, index) => {
-        // clear some values
-        const optionsValue = () => {
-            switch (value) {
-                case fieldTypes[0]: // input
-                    return []
+    const onTypeChange = useCallback((type, index) => {
+        // const optionsValue = () => {
+        //     switch (value) {
+        //         case fieldTypes[0]: // input
+        //             return []
     
-                case fieldTypes[1]: // select
-                    return []
-                    // return([
-                    //     ['option', { value: 'Option 1' }],
-                    // ])
+        //         case fieldTypes[1]: // select
+        //             return []
             
-                default:
-                    return []
-            }
-        }
+        //         default:
+        //             return [] // [] is for nothing -> clear data
+        //     }
+        // }
 
-        const modeValue = () => {
-            switch (value) {
-                case fieldTypes[0]: // input
-                    return null
+        // const modeValue = () => {
+        //     switch (value) {
+        //         case fieldTypes[0]: // input
+        //             return null
             
-                default:
-                    return null
-            }
-        }
+        //         default:
+        //             return null
+        //     }
+        // }
         
+        // for now just cleans field
         let editor = watch('editor')
-        editor[index][1][2] = optionsValue() // set options
-        editor[index][1][1].mode = modeValue() // set mode
-        reset({ 'editor': editor })
-        
-    }, [watch, reset])
+        reset({ editor })
+    }, [])
+
+    const onDelete = useCallback(index => {
+        remove(index)
+    }, [])
 
     return (
         <div style={{
@@ -82,7 +82,7 @@ export const Constructor: React.FC = props => {
                 <Dropdown 
                     overlay={(
                         <Menu
-                            onClick={onClick}
+                            onClick={onAdd}
                         >
                             {fieldTypes.map(type => (
                                 <Menu.Item
@@ -99,7 +99,9 @@ export const Constructor: React.FC = props => {
                     </Button>
                 </Dropdown>
                 <Button
-                    onClick={() => console.log(watch('editor'))}
+                    onClick={() => {
+                        console.log(watch('editor'))
+                    }}
                 >
                     LOG WATCH
                 </Button>
@@ -137,22 +139,22 @@ export const Constructor: React.FC = props => {
                                 />
                             )}
                             name={`editor[${index}][1][0]`}
-                            defaultValue={field.value[1]?.[0] ?? fieldTypes[0]}
+                            defaultValue={field.value[1]?.[0] ?? fieldTypes[0]} // maybe without ??
                         />
                     </Form.Item>
 
                     <Form.Item
                         label='field settings'
                     >
-                        <RenderField
+                        <ResolveField
                             index={index}
-                            field={watch(`editor[${index}]`)}
-                            fieldValue={field.value} // needs better name OR implementation
+                            watchField={watch(`editor[${index}]`)}
+                            fieldValue={field.value}
                         />
                         
                         <Button
                             danger
-                            onClick={() => remove(index)}
+                            onClick={() => onDelete(index)}
                         >DELETE</Button>
                     </Form.Item>
                 </div>

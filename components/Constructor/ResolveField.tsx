@@ -3,9 +3,9 @@ import { Input, Select, List, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useState, useEffect, useCallback } from 'react'
 
-export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
+export const ResolveField: React.FC<any> = ({ watchField, index, fieldValue }) => {
 
-    const fieldType = field?.[1]?.[0]
+    const fieldType = watchField?.[1]?.[0]
 
     const [state, setState] = useState(null) // add option value
 
@@ -13,27 +13,30 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
         name: `editor[${index}][1][2]`,
     })
 
+    const { setValue } = useFormContext() 
 
-    // FILL ON CREATE
-    // const { watch, reset } = useFormContext() 
+    // FILL SELECT OPTIONS ON CREATE OR TYPE CHANGE
+    useEffect(() => {
+        if (fields.length <= 0 && fieldValue[1][0] === 'select') {
+            append([ ['option', {value: 'Option 1'}] ])
+        }
+    }, [])
 
-    // useEffect(() => { 
-    //     if (fieldValue[1]?.[2] !== field?.[1]?.[2] && fieldValue[1][0] === 'select') {
-    //         let editor = watch('editor')
-    //         editor[index][1][2] = [ ['option', { value: 'Option 1' }] ]
-    //         reset({ 'editor': editor })
-    //     }
-    // }, [])
+    // SET SELECT MODE ON TYPE CHANGE
+    useEffect(() => {
+        if (fieldValue[1][0] === 'select') {
+            setValue(`editor[${index}][1][1].mode`, 'multiple')
+        }
+    }, [fieldValue[1][0]])
 
-    const onAddOption = useCallback(
-        (value, e) => {
-            append([ ['option', {value}] ])
-            setState(null)
-        }, [append, setState]
-    )
+    const onAddOption = useCallback((value, e) => {
+        append([ ['option', {value}] ])
+        setState(null)
+    }, [append, setState])
+
     const onAddOptionName = useCallback(e => setState(e.target.value), [setState])
     
-    switch (fieldType) {
+    switch (fieldType) { // cases should be from array
         case 'input':
             return (
                 <div>
@@ -43,12 +46,12 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
             
         case 'select':
             return (
-                <>        
+                <>
                 <Controller // mode
                     as={<Select />}
                     name={`editor[${index}][1][1].mode`}
-                    options={['multiple', 'tags'].map(x => ({label: x, value: x}))} // should not be from local array 
-                    defaultValue={fieldValue[1][1]?.mode ?? 'multiple'} // should be from array
+                    options={[{label: 'multiple', value: 'multiple'}, {label: 'tags', value: 'tags'}].map(x => ({label: x.label, value: x.value}))} // should not be from local array 
+                    defaultValue={fieldValue[1][1].mode}
                 />
                 <List
                     itemLayout="horizontal"
@@ -66,9 +69,10 @@ export const RenderField: React.FC<any> = ({ field, index, fieldValue }) => {
                             <Controller // option label
                                 as={<Input />}
                                 name={`editor[${index}][1][2][${subIndex}][1].value`}
-                                defaultValue={subField.value?.[1]?.value} // {fieldValue?.[1]?.value}
+                                defaultValue={subField.value?.[1]?.value}
                             />
                             <Button
+                                disabled={fields.length <= 1}
                                 danger
                                 onClick={() => remove([subIndex])}
                             >Delete</Button>
