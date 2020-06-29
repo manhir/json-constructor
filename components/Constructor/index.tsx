@@ -27,7 +27,7 @@ export const Constructor: React.FC = props => {
                 append([
                     ['New field', [
                         fieldTypes[1], { label: 'Field label', mode: 'multiple' }, [
-                            // ['option', { value: 'Option 1' }],
+                            
                         ]
                     ]]
                 ])
@@ -101,11 +101,7 @@ export const Constructor: React.FC = props => {
                         <Controller
                             render={props => (
                                 <Select
-                                    {...props}            
-                                    // onChange={value => {
-                                    //     props.onChange(value)
-                                    //     onTypeChange(value, index)
-                                    // }} 
+                                    {...props}
                                     options={fieldTypes.map(x => ({label: x, value: x}))}
                                 />
                             )}

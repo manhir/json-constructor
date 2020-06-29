@@ -106,7 +106,7 @@ export default function Home() {
         <h1>
           FORM
         </h1>
-        {true ? null : (  
+        {false ? null : (  
           <ViewForm
             style={{
               width: '400px'

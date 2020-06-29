@@ -21,13 +21,21 @@ export const ResolveField: React.FC<any> = ({ watchField, fieldValue, name, fiel
         }
     }, [fieldId, watch(`${name}[1][0]`)])
 
-    // CLEAR SELECT MODE ON TYPE CHANGE
+    // CLEAR SELECT MODE ON TYPE CHANGE ||| SET SELECT MODE ON TYPE CHANGE
     useEffect(() => {
         if (watch(`${name}[1][0]`) !== 'select') {
-            console.log('mode clear')
             setValue(`${name}[1][1].mode`, undefined)
+        } else {
+            setValue(`${name}[1][1].mode`, 'multiple')
         }
     }, [watch(`${name}[1][0]`)])
+
+    // ADD DEFAULT SELECT FIELD ON CREATE OR TYPE CHANGE
+    useEffect(() => {
+        if (watch(`${name}[1][0]`) === 'select' && fields.length <= 0) {
+            append([ ['option', { value: 'Option 1' }] ])
+        }
+    }, [fields.length, watch(`${name}[1][0]`)])
 
     const onAddOption = useCallback((value, e) => {
         append([ ['option', {value}] ])
@@ -38,13 +46,6 @@ export const ResolveField: React.FC<any> = ({ watchField, fieldValue, name, fiel
 
     function renderSelectFields() {
         switch (watch(`${name}[1][0]`)) {
-            case 'input':
-                return (
-                    <div>
-                        this type has no settings
-                    </div>
-                )
-            
             case 'select': 
             return (
                 <>
@@ -67,7 +68,7 @@ export const ResolveField: React.FC<any> = ({ watchField, fieldValue, name, fiel
                                 defaultValue={subField.value[1]?.value}
                             />
                             <Button
-                                // disabled={fields.length <= 1}
+                                disabled={fields.length <= 1}
                                 danger
                                 onClick={() => remove(subIndex)}
                             >Delete</Button>
@@ -101,6 +102,12 @@ export const ResolveField: React.FC<any> = ({ watchField, fieldValue, name, fiel
             />
 
             {renderSelectFields()}
+            
+            {watch(`${name}[1][0]`) !== 'input' ? null : (
+                <div>
+                    this type has no settings
+                </div>
+            )}
         </>
     )
 }
