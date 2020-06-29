@@ -32,7 +32,7 @@ export const SchemaConstructor: React.FC = props => {
                 <TabPane tab="CONSTRUCTOR" key="constructor">
                     <Constructor />
                 </TabPane>
-                <TabPane tab="CODE" key="code" disabled >
+                <TabPane tab="CODE" key="code">
                 <Code key='2'
                     state={state}
                     setState={setState}

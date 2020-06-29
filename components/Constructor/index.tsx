@@ -4,7 +4,7 @@ import { DownOutlined } from '@ant-design/icons'
 import { useCallback } from 'react'
 import { ResolveField } from './ResolveField'
 
-export const Constructor: React.FC = props => {
+export const Constructor: React.FC = () => {
 
     const { watch } = useFormContext() 
 
@@ -26,7 +26,7 @@ export const Constructor: React.FC = props => {
             case fieldTypes[1]: // select
                 append([
                     ['New field', [
-                        fieldTypes[1], { label: 'Field label', mode: null }, [] // mode and [] default values are in <ResolveField>
+                        fieldTypes[1], { label: 'Field label', mode: 'default' }, [] // [] default values are in <ResolveField>
                     ]]
                 ])
                 break

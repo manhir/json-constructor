@@ -3,8 +3,14 @@ import { useFieldArray, useFormContext, Controller } from "react-hook-form"
 import { Select, Input, Button } from "antd"
 import { List } from "antd"
 import { PlusOutlined } from '@ant-design/icons'
+import { ArrayField } from "react-hook-form/dist/types/form"
 
-export const ResolveField: React.FC<any> = ({ field, index }) => {
+interface IResolveFieldProps {
+    field: Partial<ArrayField<Record<string, any>, "id">>,
+    index: number
+}
+
+export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => {
 
     const { setValue, watch } = useFormContext()
 
@@ -31,13 +37,36 @@ export const ResolveField: React.FC<any> = ({ field, index }) => {
 
     // CLEAR SELECT MODE ON TYPE CHANGE ||| SET SELECT MODE ON TYPE CHANGE
     useEffect(() => {
-        if (fieldType !== 'select') {
+        if (watch(`${name}[1][0]`) !== 'select') {
             setValue(`${name}[1][1].mode`, undefined)
-        } else {
+        } else if (watch().editor[index][1][1].mode === undefined) {
             setValue(`${name}[1][1].mode`, 'default')
         }
-    }, [fieldType])
+    }, [name, watch(`${name}[1][0]`)])
 
+    const renderSelectOptionsList = useCallback((subField, subIndex) => (
+        <List.Item
+            key={subField.id}
+        >
+            <Controller // is invisible, for ['option', {!@#}]
+                as={<Input />}
+                name={`${name}[1][2][${subIndex}][0]`}
+                style={{ display: 'none' }}
+                defaultValue={'option'}
+            />
+            <Controller // option label
+                as={<Input />}
+                name={`${name}[1][2][${subIndex}][1].value`}
+                defaultValue={subField.value[1]?.value}
+            />
+            <Button
+                disabled={fields.length <= 1}
+                danger
+                onClick={() => remove(subIndex)}
+            >Delete</Button>
+        </List.Item>
+    ), [fields.length, remove])
+    
     const [state, setState] = useState(null) // new select option name value
 
     const onAddOption = useCallback((value, e) => {
@@ -49,14 +78,14 @@ export const ResolveField: React.FC<any> = ({ field, index }) => {
 
     return (
         <>
-            {fieldType !== 'input' ? null : (
-                <div style={{ paddingBottom: '12px'}}>
-                    this type has no settings
-                </div>
-            )}
+            <div style={{
+                display: fieldType === 'input' ? null : 'none',
+                paddingBottom: '12px'
+            }}>
+                this type has no settings
+            </div>
 
-            <div style={{display: fieldType === 'select' ? null : 'none'}}>
-                
+            <div style={{ display: fieldType === 'select' ? null : 'none' }}>
                 <List
                     header={(
                         <Controller // select mode
@@ -66,34 +95,13 @@ export const ResolveField: React.FC<any> = ({ field, index }) => {
                                 {label: 'default', value: ''},
                                 {label: 'multiple', value: 'multiple'}, 
                                 {label: 'tags', value: 'tags'},
-                            ].map(x => ({label: x.label, value: x.value}))} // should not be from local array 
+                            ]}
                             defaultValue={field.value[1]?.[1]?.mode}
                         />
                     )}
                     itemLayout="horizontal"
                     dataSource={fields}
-                    renderItem={(subField, subIndex) => (
-                        <List.Item
-                            key={subField.id}
-                        >
-                            <Controller // is invisible, for ['option', {!@#}]
-                                as={<Input />}
-                                name={`${name}[1][2][${subIndex}][0]`}
-                                style={{ display: 'none' }}
-                                defaultValue={'option'}
-                            />
-                            <Controller // option label
-                                as={<Input />}
-                                name={`${name}[1][2][${subIndex}][1].value`}
-                                defaultValue={subField.value[1]?.value}
-                            />
-                            <Button
-                                disabled={fields.length <= 1}
-                                danger
-                                onClick={() => remove(subIndex)}
-                            >Delete</Button>
-                        </List.Item>
-                    )}
+                    renderItem={renderSelectOptionsList}
                     footer={(
                         <Input.Search
                             value={state}
