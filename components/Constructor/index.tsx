@@ -98,7 +98,7 @@ export const Constructor: React.FC = props => {
                     <Form.Item
                         label='type'
                     >
-                        <Controller
+                        <Controller // field type
                             render={props => (
                                 <Select
                                     {...props}
@@ -115,10 +115,7 @@ export const Constructor: React.FC = props => {
                     >
                         <ResolveField
                             key={field.id}
-                            watchField={watch(`editor[${index}]`)}
-                            fieldValue={field.value}
-                            name={`editor[${index}]`}
-                            fieldId={field.id}
+                            field={field}
                             index={index}
                         />
                         <Button
