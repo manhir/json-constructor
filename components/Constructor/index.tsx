@@ -1,12 +1,12 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Form, Button, Select, Dropdown, Menu } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { ResolveField } from './ResolveField'
 
 export const Constructor: React.FC = props => {
 
-    const { watch, reset, getValues, setValue } = useFormContext() 
+    const { watch } = useFormContext() 
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
@@ -17,7 +17,7 @@ export const Constructor: React.FC = props => {
         'select',
     ]
 
-    const onAdd = useCallback(item => {
+    const onAdd = useCallback(item => { // !! make name & label unique
         switch (item.key) {
             case fieldTypes[0]: // input
                 append([ ['New field', [fieldTypes[0], { label: 'Field label' }]] ])
@@ -26,9 +26,7 @@ export const Constructor: React.FC = props => {
             case fieldTypes[1]: // select
                 append([
                     ['New field', [
-                        fieldTypes[1], { label: 'Field label', mode: 'multiple' }, [
-                            
-                        ]
+                        fieldTypes[1], { label: 'Field label', mode: null }, [] // mode and [] default values are in <ResolveField>
                     ]]
                 ])
                 break
@@ -82,7 +80,7 @@ export const Constructor: React.FC = props => {
                     style={{ border: 'solid 1px black' }}
                 >
                     <Form.Item
-                        label={`field name & field label`}
+                        label={`name & label`}
                     >
                         <Controller // field name
                             as={<Input />}
@@ -111,7 +109,7 @@ export const Constructor: React.FC = props => {
                     </Form.Item>
 
                     <Form.Item
-                        label='field settings'
+                        label='type settings'
                     >
                         <ResolveField
                             key={field.id}

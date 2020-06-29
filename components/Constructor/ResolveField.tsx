@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useFieldArray, useFormContext, Controller } from "react-hook-form"
 import { Select, Input, Button } from "antd"
 import { List } from "antd"
@@ -20,7 +20,7 @@ export const ResolveField: React.FC<any> = ({ field, index }) => {
         if (watch(`${name}[1][0]`) !== 'select') {
             remove()
         }
-    }, [watch(`${name}[1][0]`)]) // dosen't work with fieldType
+    }, [watch(`${name}[1][0]`)])
     
     // ADD DEFAULT SELECT FIELD ON CREATE OR TYPE CHANGE
     useEffect(() => {
@@ -34,12 +34,11 @@ export const ResolveField: React.FC<any> = ({ field, index }) => {
         if (fieldType !== 'select') {
             setValue(`${name}[1][1].mode`, undefined)
         } else {
-            setValue(`${name}[1][1].mode`, 'multiple')
+            setValue(`${name}[1][1].mode`, 'default')
         }
     }, [fieldType])
 
-    
-    const [state, setState] = useState(null) // add option value
+    const [state, setState] = useState(null) // new select option name value
 
     const onAddOption = useCallback((value, e) => {
         append([ ['option', {value}] ])
@@ -51,55 +50,60 @@ export const ResolveField: React.FC<any> = ({ field, index }) => {
     return (
         <>
             {fieldType !== 'input' ? null : (
-                <div>
+                <div style={{ paddingBottom: '12px'}}>
                     this type has no settings
                 </div>
             )}
 
-            <Controller // select mode
-                as={<Select />}
-                name={`editor[${index}][1][1].mode`}
-                options={[{label: 'multiple', value: 'multiple'}, {label: 'tags', value: 'tags'}].map(x => ({label: x.label, value: x.value}))} // should not be from local array 
-                defaultValue={field.value[1]?.[1]?.mode}
-                style={{display: fieldType === 'select' ? null : 'none'}}
-            />
-            <List
-                style={{
-                    display: fieldType === 'select' ? null : 'none'
-                }}
-                itemLayout="horizontal"
-                dataSource={fields}
-                renderItem={(subField, subIndex) => (
-                    <List.Item
-                        key={subField.id}
-                    >
-                        <Controller // invisible, for ['option', {!@#}]
-                            as={<Input />}
-                            name={`${name}[1][2][${subIndex}][0]`}
-                            style={{ display: 'none' }}
-                            defaultValue={'option'}
+            <div style={{display: fieldType === 'select' ? null : 'none'}}>
+                
+                <List
+                    header={(
+                        <Controller // select mode
+                            as={<Select />}
+                            name={`editor[${index}][1][1].mode`}
+                            options={[
+                                {label: 'default', value: ''},
+                                {label: 'multiple', value: 'multiple'}, 
+                                {label: 'tags', value: 'tags'},
+                            ].map(x => ({label: x.label, value: x.value}))} // should not be from local array 
+                            defaultValue={field.value[1]?.[1]?.mode}
                         />
-                        <Controller // option label
-                            as={<Input />}
-                            name={`${name}[1][2][${subIndex}][1].value`}
-                            defaultValue={subField.value[1]?.value}
+                    )}
+                    itemLayout="horizontal"
+                    dataSource={fields}
+                    renderItem={(subField, subIndex) => (
+                        <List.Item
+                            key={subField.id}
+                        >
+                            <Controller // is invisible, for ['option', {!@#}]
+                                as={<Input />}
+                                name={`${name}[1][2][${subIndex}][0]`}
+                                style={{ display: 'none' }}
+                                defaultValue={'option'}
+                            />
+                            <Controller // option label
+                                as={<Input />}
+                                name={`${name}[1][2][${subIndex}][1].value`}
+                                defaultValue={subField.value[1]?.value}
+                            />
+                            <Button
+                                disabled={fields.length <= 1}
+                                danger
+                                onClick={() => remove(subIndex)}
+                            >Delete</Button>
+                        </List.Item>
+                    )}
+                    footer={(
+                        <Input.Search
+                            value={state}
+                            onChange={onAddOptionName}
+                            onSearch={onAddOption}
+                            enterButton={<><PlusOutlined />Add</>} 
                         />
-                        <Button
-                            disabled={fields.length <= 1}
-                            danger
-                            onClick={() => remove(subIndex)}
-                        >Delete</Button>
-                    </List.Item>
-                )}
-                footer={(
-                    <Input.Search
-                        value={state}
-                        onChange={onAddOptionName}
-                        onSearch={onAddOption}
-                        enterButton={<><PlusOutlined />Add</>} 
-                    />
-                )}
-            />
+                    )}
+                />
+            </div>
         </>
     )
 }
