@@ -1,12 +1,12 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Form, Button, Select, Dropdown, Menu } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
+import { useCallback, useState } from 'react'
 import { ResolveField } from './ResolveField'
-import { useCallback } from 'react'
 
 export const Constructor: React.FC = props => {
 
-    const { watch, reset, setValue, unregister } = useFormContext() 
+    const { watch, reset, getValues, setValue } = useFormContext() 
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
@@ -38,38 +38,9 @@ export const Constructor: React.FC = props => {
         }
     }, [])
 
-    const onTypeChange = useCallback((type, index) => {
-        // const optionsValue = () => {
-        //     switch (value) {
-        //         case fieldTypes[0]: // input
-        //             return []
-    
-        //         case fieldTypes[1]: // select
-        //             return []
-            
-        //         default:
-        //             return [] // [] is for nothing -> clear data
-        //     }
-        // }
-
-        // const modeValue = () => {
-        //     switch (value) {
-        //         case fieldTypes[0]: // input
-        //             return null
-            
-        //         default:
-        //             return null
-        //     }
-        // }
-        
-        // for now just cleans field
-        let editor = watch('editor')
-        reset({ editor })
-    }, [])
-
     const onDelete = useCallback(index => {
         remove(index)
-    }, [])
+    }, [remove])
 
     return (
         <div style={{
@@ -95,7 +66,7 @@ export const Constructor: React.FC = props => {
                     )}
                 >
                     <Button>
-                    ADD <DownOutlined />
+                        ADD <DownOutlined />
                     </Button>
                 </Dropdown>
                 <Button
@@ -113,7 +84,7 @@ export const Constructor: React.FC = props => {
                     <Form.Item
                         label={`field name & field label`}
                     >
-                        <Controller // data field name
+                        <Controller // field name
                             as={<Input />}
                             name={`editor[${index}][0]`}
                             defaultValue={field.value[0]}
@@ -131,10 +102,10 @@ export const Constructor: React.FC = props => {
                             render={props => (
                                 <Select
                                     {...props}            
-                                    onChange={value => {
-                                        props.onChange(value)
-                                        onTypeChange(value, index)
-                                    }} 
+                                    // onChange={value => {
+                                    //     props.onChange(value)
+                                    //     onTypeChange(value, index)
+                                    // }} 
                                     options={fieldTypes.map(x => ({label: x, value: x}))}
                                 />
                             )}
@@ -147,11 +118,13 @@ export const Constructor: React.FC = props => {
                         label='field settings'
                     >
                         <ResolveField
-                            index={index}
+                            key={field.id}
                             watchField={watch(`editor[${index}]`)}
                             fieldValue={field.value}
+                            name={`editor[${index}]`}
+                            fieldId={field.id}
+                            index={index}
                         />
-                        
                         <Button
                             danger
                             onClick={() => onDelete(index)}

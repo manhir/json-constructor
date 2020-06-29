@@ -98,14 +98,15 @@ export default function Home() {
           DATA
         </h1>
         <AceEditor
-          value={'ORIGINAL SCHEMA' + schemaContent + 'SUBMITTED\n' + (!submitted ? 'nothing' : json5.stringify(submitted, null, '   '))}
+          minLines={50}
+          value={schemaContent + 'SUBMITTED\n' + (!submitted ? 'nothing' : json5.stringify(submitted, null, '   '))} 
         />
       </div>
       <div>
         <h1>
           FORM
         </h1>
-        {false ? null : (  
+        {true ? null : (  
           <ViewForm
             style={{
               width: '400px'

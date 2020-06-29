@@ -1,58 +1,53 @@
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { Input, Select, List, Button } from 'antd'
+import { useState, useCallback, useMemo, useEffect } from "react"
+import { useFieldArray, useFormContext, Controller } from "react-hook-form"
+import { Select, Input, Button } from "antd"
+import { List } from "antd"
 import { PlusOutlined } from '@ant-design/icons'
-import { useState, useEffect, useCallback } from 'react'
 
-export const ResolveField: React.FC<any> = ({ watchField, index, fieldValue }) => {
-
-    const fieldType = watchField?.[1]?.[0]
-
+export const ResolveField: React.FC<any> = ({ watchField, fieldValue, name, fieldId, index }) => {
+    
     const [state, setState] = useState(null) // add option value
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
-        name: `editor[${index}][1][2]`,
+        name: `${name}[1][2]`,
     })
 
-    const { setValue } = useFormContext() 
+    const { setValue, reset, getValues, watch, unregister, register } = useFormContext()
 
-    // FILL SELECT OPTIONS ON CREATE OR TYPE CHANGE
+    // CLEAR OPTIONS ON TYPE CHANGE
     useEffect(() => {
-        if (fields.length <= 0 && fieldValue[1][0] === 'select') {
-            append([ ['option', {value: 'Option 1'}] ])
+        if (watch(`${name}[1][0]`) !== 'select') {
+            remove()
         }
-    }, [])
+    }, [fieldId, watch(`${name}[1][0]`)])
 
-    // SET SELECT MODE ON TYPE CHANGE
+    // CLEAR SELECT MODE ON TYPE CHANGE
     useEffect(() => {
-        if (fieldValue[1][0] === 'select') {
-            setValue(`editor[${index}][1][1].mode`, 'multiple')
+        if (watch(`${name}[1][0]`) !== 'select') {
+            console.log('mode clear')
+            setValue(`${name}[1][1].mode`, undefined)
         }
-    }, [fieldValue[1][0]])
+    }, [watch(`${name}[1][0]`)])
 
     const onAddOption = useCallback((value, e) => {
         append([ ['option', {value}] ])
         setState(null)
-    }, [append, setState])
+    }, [setState])
 
     const onAddOptionName = useCallback(e => setState(e.target.value), [setState])
-    
-    switch (fieldType) { // cases should be from array
-        case 'input':
-            return (
-                <div>
-                    this type has no settings
-                </div>
-            )
+
+    function renderSelectFields() {
+        switch (watch(`${name}[1][0]`)) {
+            case 'input':
+                return (
+                    <div>
+                        this type has no settings
+                    </div>
+                )
             
-        case 'select':
+            case 'select': 
             return (
                 <>
-                <Controller // mode
-                    as={<Select />}
-                    name={`editor[${index}][1][1].mode`}
-                    options={[{label: 'multiple', value: 'multiple'}, {label: 'tags', value: 'tags'}].map(x => ({label: x.label, value: x.value}))} // should not be from local array 
-                    defaultValue={fieldValue[1][1].mode}
-                />
                 <List
                     itemLayout="horizontal"
                     dataSource={fields}
@@ -62,19 +57,19 @@ export const ResolveField: React.FC<any> = ({ watchField, index, fieldValue }) =
                         >
                             <Controller // invisible, for ['option', {!@#}]
                                 as={<Input />}
-                                name={`editor[${index}][1][2][${subIndex}][0]`}
+                                name={`${name}[1][2][${subIndex}][0]`}
                                 style={{ display: 'none' }}
-                                defaultValue={'option'} // subField.value[0]
+                                defaultValue={'option'}
                             />
                             <Controller // option label
                                 as={<Input />}
-                                name={`editor[${index}][1][2][${subIndex}][1].value`}
-                                defaultValue={subField.value?.[1]?.value}
+                                name={`${name}[1][2][${subIndex}][1].value`}
+                                defaultValue={subField.value[1]?.value}
                             />
                             <Button
-                                disabled={fields.length <= 1}
+                                // disabled={fields.length <= 1}
                                 danger
-                                onClick={() => remove([subIndex])}
+                                onClick={() => remove(subIndex)}
                             >Delete</Button>
                         </List.Item>
                     )}
@@ -89,9 +84,23 @@ export const ResolveField: React.FC<any> = ({ watchField, index, fieldValue }) =
                 />
                 </>
             )
-    
-        default: 
-            return null
- 
+        
+            default:
+                return null
+        }
     }
+
+    return (
+        <>
+            <Controller // select mode
+                as={<Select />}
+                name={`editor[${index}][1][1].mode`}
+                options={[{label: 'multiple', value: 'multiple'}, {label: 'tags', value: 'tags'}].map(x => ({label: x.label, value: x.value}))} // should not be from local array 
+                defaultValue={fieldValue[1]?.[1]?.mode}
+                style={{display: watch(`editor[${index}][1][0]`) === 'select' ? null : 'none'}}
+            />
+
+            {renderSelectFields()}
+        </>
+    )
 }
