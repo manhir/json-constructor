@@ -76,8 +76,15 @@ export const Constructor: React.FC = () => {
                     onClick={() => {
                         console.log(watch('editor'))
                     }}
+                    type='dashed'
                 >
                     LOG WATCH
+                </Button>
+                <Button
+                    onClick={() => console.log('errors', errors)}
+                    type='dashed'
+                >
+                    LOG ERRORS
                 </Button>
             </div>
             {fields.map((field, index) => (

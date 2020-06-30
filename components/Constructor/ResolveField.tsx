@@ -12,7 +12,7 @@ interface IResolveFieldProps {
 
 export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => {
 
-    const { setValue, watch } = useFormContext()
+    const { setValue, watch, clearErrors, errors } = useFormContext()
 
     const name = `editor[${index}]`
     const fieldType = watch(`${name}[1][0]`)
@@ -48,6 +48,7 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
     useEffect(() => {
         if (fieldType !== 'text') {
             setValue(`${name}[1][1].rows`, undefined)
+            clearErrors(`${name}[1][1].rows`)
         } else if (watch().editor[index][1][1].rows === undefined) {
             setValue(`${name}[1][1].rows`, 4)
         }
@@ -124,12 +125,16 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
             <div style={{ display: fieldType === 'text' ? null : 'none' }}>
                 <Form.Item
                     label={`rows`}
+                    help={errors?.editor?.[index]?.[1]?.[1]?.rows?.message}
                 >
                     <Controller // rows
                         as={<InputNumber />}
-                        name={`editor[${index}][1][1].rows`}
+                        name={`${name}[1][1].rows`}
                         defaultValue={field.value[1]?.[1]?.rows}
                         min={1}
+                        rules={{
+                            required: watch(`${name}[1][0]`) === 'text' ? 'field required' : false
+                        }}
                     />
                 </Form.Item>
             </div>

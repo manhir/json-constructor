@@ -34,7 +34,7 @@ export default function Home() {
   const [editor, setEditor] = useState<any>(json5.parse(schemaContent).editor) // no validate, cause its from server
   
   const formMethods = useForm({
-      reValidateMode: 'onSubmit',
+      reValidateMode: 'onBlur', // onSubmit
       defaultValues: {
         editor,
         // layerName
