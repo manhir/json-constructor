@@ -96,6 +96,7 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
             </div>
 
             <div style={{ display: fieldType === 'select' ? null : 'none' }}>
+                {'mode & options'}
                 <List
                     header={(
                         <Controller // select mode
@@ -124,7 +125,7 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
             </div>
             <div style={{ display: fieldType === 'text' ? null : 'none' }}>
                 <Form.Item
-                    label={`rows`}
+                    label={`rows (REQUIRED)`}
                     help={errors?.editor?.[index]?.[1]?.[1]?.rows?.message}
                 >
                     <Controller // rows

@@ -92,13 +92,14 @@ export const Constructor: React.FC = () => {
                     style={{ border: `solid 1px ${errors?.editor?.[index] ? 'red' : 'black'}` }}
                 >
                     <Form.Item
-                        label={`name & label`}
+                        label={`name & label (BOTH REQUIRED, MESSAGE ONLY FOR NAME)`}
                         help={errors.editor?.[index]?.[0]?.message} // this is test validation output
                     >
                         <Controller // field name
                             as={<Input />}
                             name={`editor[${index}][0]`}
                             defaultValue={field.value[0]}
+                            placeholder='empty'
                             rules={{
                                 required: 'field required'
                             }}
@@ -107,6 +108,7 @@ export const Constructor: React.FC = () => {
                             as={<Input />}
                             name={`editor[${index}][1][1].label`}
                             defaultValue={field.value[1]?.[1]?.label}
+                            placeholder='empty'
                             rules={{
                                 required: 'field required'
                             }}
