@@ -89,7 +89,7 @@ export const Constructor: React.FC = () => {
             </div>
             {fields.map((field, index) => (
                 <div key={field.id}
-                    style={{ border: 'solid 1px black' }}
+                    style={{ border: `solid 1px ${errors?.editor?.[index] ? 'red' : 'black'}` }}
                 >
                     <Form.Item
                         label={`name & label`}
