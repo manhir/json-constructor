@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react"
 import { useFieldArray, useFormContext, Controller } from "react-hook-form"
-import { Select, Input, Button } from "antd"
+import { Select, Input, Button, InputNumber, Form } from "antd"
 import { List } from "antd"
 import { PlusOutlined } from '@ant-design/icons'
 import { ArrayField } from "react-hook-form/dist/types/form"
@@ -43,6 +43,15 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
             setValue(`${name}[1][1].mode`, 'default')
         }
     }, [name, watch(`${name}[1][0]`)])
+
+    // CLEAR TEXT ROWS ON TYPE CHANGE ||| SET TEXT ROWS ON TYPE CHANGE
+    useEffect(() => {
+        if (fieldType !== 'text') {
+            setValue(`${name}[1][1].rows`, undefined)
+        } else if (watch().editor[index][1][1].rows === undefined) {
+            setValue(`${name}[1][1].rows`, 4)
+        }
+    }, [fieldType])
 
     const renderSelectOptionsList = useCallback((subField, subIndex) => (
         <List.Item
@@ -111,6 +120,18 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
                         />
                     )}
                 />
+            </div>
+            <div style={{ display: fieldType === 'text' ? null : 'none' }}>
+                <Form.Item
+                    label={`rows`}
+                >
+                    <Controller // rows
+                        as={<InputNumber />}
+                        name={`editor[${index}][1][1].rows`}
+                        defaultValue={field.value[1]?.[1]?.rows}
+                        min={1}
+                    />
+                </Form.Item>
             </div>
         </>
     )

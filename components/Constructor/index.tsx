@@ -6,7 +6,7 @@ import { ResolveField } from './ResolveField'
 
 export const Constructor: React.FC = () => {
 
-    const { watch } = useFormContext() 
+    const { watch, errors } = useFormContext()
 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: 'editor', // from useForm({ defaultValues })
@@ -15,6 +15,7 @@ export const Constructor: React.FC = () => {
     const fieldTypes = [
         'input',
         'select',
+        'text',
     ]
 
     const onAdd = useCallback(item => { // !! make name & label unique
@@ -31,6 +32,10 @@ export const Constructor: React.FC = () => {
                 ])
                 break
         
+            case fieldTypes[2]: // text
+                append([ ['New field', [fieldTypes[2], { label: 'Field label', rows: 4 }]] ])
+                break
+
             default:
                 break
         }
@@ -81,16 +86,23 @@ export const Constructor: React.FC = () => {
                 >
                     <Form.Item
                         label={`name & label`}
+                        help={errors.editor?.[index]?.[0]?.message} // this is test validation output
                     >
                         <Controller // field name
                             as={<Input />}
                             name={`editor[${index}][0]`}
                             defaultValue={field.value[0]}
+                            rules={{
+                                required: 'field required'
+                            }}
                         />
                         <Controller // label name
                             as={<Input />}
                             name={`editor[${index}][1][1].label`}
                             defaultValue={field.value[1]?.[1]?.label}
+                            rules={{
+                                required: 'field required'
+                            }}
                         />
                     </Form.Item>
                     <Form.Item

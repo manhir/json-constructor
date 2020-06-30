@@ -14,6 +14,7 @@ export default function Home() {
 {
   "version": 3,
   "editor": [
+    ['comment', ['text', { label: 'Комментарий', rows: 4 }]],
     ['groupSize', ['input', { label: 'Количество' }]],
     [
       'male', 
