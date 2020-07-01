@@ -12,7 +12,7 @@ interface IResolveFieldProps {
 
 export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => {
 
-    const { setValue, watch, clearErrors, errors } = useFormContext()
+    const { watch, errors } = useFormContext()
 
     const name = `editor[${index}]`
     const fieldType = watch(`${name}[1][0]`)
@@ -20,39 +20,13 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         name: `${name}[1][2]`,
     })
-
-    // CLEAR SELECT OPTIONS ON TYPE CHANGE
-    useEffect(() => {
-        if (watch(`${name}[1][0]`) !== 'select') {
-            remove()
-        }
-    }, [watch(`${name}[1][0]`)])
     
-    // ADD DEFAULT SELECT FIELD ON CREATE OR TYPE CHANGE
+    // ADD DEFAULT SELECT FIELD ON CREATE
     useEffect(() => {
         if (fieldType === 'select' && fields.length <= 0) {
             append([ ['option', { value: 'Option 1' }] ])
         }
     }, [fields.length, fieldType])
-
-    // CLEAR SELECT MODE ON TYPE CHANGE ||| SET SELECT MODE ON TYPE CHANGE
-    useEffect(() => {
-        if (watch(`${name}[1][0]`) !== 'select') {
-            setValue(`${name}[1][1].mode`, undefined)
-        } else if (watch().editor[index][1][1].mode === undefined) {
-            setValue(`${name}[1][1].mode`, 'default')
-        }
-    }, [name, watch(`${name}[1][0]`)])
-
-    // CLEAR TEXT ROWS ON TYPE CHANGE ||| SET TEXT ROWS ON TYPE CHANGE
-    useEffect(() => {
-        if (fieldType !== 'text') {
-            setValue(`${name}[1][1].rows`, undefined)
-            clearErrors(`${name}[1][1].rows`)
-        } else if (watch().editor[index][1][1].rows === undefined) {
-            setValue(`${name}[1][1].rows`, 4)
-        }
-    }, [fieldType])
 
     const renderSelectOptionsList = useCallback((subField, subIndex) => (
         <List.Item
@@ -125,7 +99,7 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
             </div>
             <div style={{ display: fieldType === 'text' ? null : 'none' }}>
                 <Form.Item
-                    label={`rows (REQUIRED)`}
+                    label={`rows`}
                     help={errors?.editor?.[index]?.[1]?.[1]?.rows?.message}
                 >
                     <Controller // rows
