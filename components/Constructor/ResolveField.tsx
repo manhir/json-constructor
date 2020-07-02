@@ -68,7 +68,6 @@ export const ResolveField: React.FC<IResolveFieldProps> = ({ field, index }) => 
             }}>
                 this type has no settings
             </div>
-
             <div style={{ display: fieldType === 'select' ? null : 'none' }}>
                 {'mode & options'}
                 <List

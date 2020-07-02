@@ -100,7 +100,7 @@ export const Constructor: React.FC = () => {
                             ref={provided.innerRef} 
                             {...provided.droppableProps}
                             style={{
-                                backgroundColor: snapshot.isDraggingOver ? 'grey' : null,
+                                backgroundColor: snapshot.isDraggingOver ? 'darkgrey' : null,
                                 transition: 'background-color .5s',
                                 padding: 4,
                             }}
@@ -115,8 +115,7 @@ export const Constructor: React.FC = () => {
                                             style={{ 
                                                 ...provided.draggableProps.style,
                                                 border: `solid 1px ${errors?.editor?.[index] ? 'red' : 'black'}`,
-                                                backgroundColor: snapshot.isDragging ? '#40a9ff' : 'white',
-                                                transition: `background-color .5s` + !provided.draggableProps.style.transition ? '' : `, ${provided.draggableProps.style.transition}`
+                                                backgroundColor: snapshot.isDragging ? 'grey' : 'white',
                                             }}
                                         >
                                             <EllipsisOutlined 
@@ -129,7 +128,7 @@ export const Constructor: React.FC = () => {
                                             />
                                             <Form.Item
                                                 label={`name & label`}
-                                                help={errors.editor?.[index]?.[0]?.message} // this is test validation output
+                                                help={errors.editor?.[index]?.[0]?.message}
                                             >
                                                 <Controller // field name
                                                     as={<Input />}
@@ -137,7 +136,7 @@ export const Constructor: React.FC = () => {
                                                     defaultValue={field.value[0]}
                                                     placeholder='empty'
                                                     rules={{
-                                                        required: 'field required'
+                                                        required: 'name required'
                                                     }}
                                                 />
                                                 <Controller // label name
@@ -146,7 +145,7 @@ export const Constructor: React.FC = () => {
                                                     defaultValue={field.value[1]?.[1]?.label}
                                                     placeholder='empty'
                                                     rules={{
-                                                        required: 'field required'
+                                                        required: 'label required'
                                                     }}
                                                 />
                                             </Form.Item>

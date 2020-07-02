@@ -52,7 +52,7 @@ export default function Home() {
     // console.log('result', result)
     console.log('data', data)
     setSubmitted(data)
-  }, [])
+  }, [setSubmitted])
 
   return (
     <>
