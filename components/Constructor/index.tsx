@@ -1,6 +1,6 @@
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { Input, Form, Button, Select, Dropdown, Menu } from 'antd'
-import { DownOutlined } from '@ant-design/icons'
+import { DownOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { useCallback } from 'react'
 import { ResolveField } from './ResolveField'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
@@ -46,9 +46,11 @@ export const Constructor: React.FC = () => {
         remove(index)
     }, [remove])
 
+    const onDragEnd = useCallback(props => !props.destination ? null : move(props.source.index, props.destination.index), [])
+
     return (
         <DragDropContext
-            onDragEnd={props => !props.destination ? null : move(props.source.index, props.destination.index)}
+            onDragEnd={onDragEnd}
         >
             <div style={{
                 display: 'flex',
@@ -93,20 +95,38 @@ export const Constructor: React.FC = () => {
                 </div>
                 
                 <Droppable droppableId='constructor'>
-                    {provided => (
-                        <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                        <div 
+                            ref={provided.innerRef} 
+                            {...provided.droppableProps}
+                            style={{
+                                backgroundColor: snapshot.isDraggingOver ? 'grey' : null,
+                                transition: 'background-color .5s',
+                                padding: 4,
+                            }}
+                        >
                             {fields.map((field, index) => (
                                 <Draggable draggableId={field.id} index={index} key={field.id}>
-                                    {provided => (
-                                        <div key={field.id}
+                                    {(provided, snapshot) => (
+                                        <div 
+                                            key={field.id}
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
                                             style={{ 
                                                 ...provided.draggableProps.style,
-                                                border: `solid 1px ${errors?.editor?.[index] ? 'red' : 'black'}`
+                                                border: `solid 1px ${errors?.editor?.[index] ? 'red' : 'black'}`,
+                                                backgroundColor: snapshot.isDragging ? '#40a9ff' : 'white',
+                                                transition: `background-color .5s` + !provided.draggableProps.style.transition ? '' : `, ${provided.draggableProps.style.transition}`
                                             }}
                                         >
+                                            <EllipsisOutlined 
+                                                {...provided.dragHandleProps}
+                                                style={{
+                                                    backgroundColor: 'lightgrey',
+                                                    padding: '4px',
+                                                    width: '100%',
+                                                }}
+                                            />
                                             <Form.Item
                                                 label={`name & label`}
                                                 help={errors.editor?.[index]?.[0]?.message} // this is test validation output
